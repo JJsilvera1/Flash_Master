@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CheckCircle, XCircle, ArrowRight, RefreshCcw, Sparkles, Loader2, AlertCircle, ArrowLeftRight, FastForward } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 export default function QuizMode({ cards: rawCards }) {
     const cards = React.useMemo(() => {
@@ -12,6 +13,7 @@ export default function QuizMode({ cards: rawCards }) {
     const [options, setOptions] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [view, setView] = useState('question'); // 'question' | 'feedback'
+    const [questionQueue, setQuestionQueue] = useState([]);
 
     // Scoring & History
     const [correctCount, setCorrectCount] = useState(0);
@@ -34,14 +36,43 @@ export default function QuizMode({ cards: rawCards }) {
     const [countdown, setCountdown] = useState(null);
     const nextTimerRef = useRef(null);
 
+    const shuffle = (array) => {
+        let currentIndex = array.length, randomIndex;
+        // While there remain elements to shuffle.
+        while (currentIndex !== 0) {
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    };
+
     const generateQuestion = async () => {
         if (nextTimerRef.current) clearTimeout(nextTimerRef.current);
         setCountdown(null);
 
         if (!cards || (!useAI && cards.length < 4)) return;
 
-        // Pick a card
-        const randomCard = cards[Math.floor(Math.random() * cards.length)];
+        // Manage Queue
+        let nextCard;
+        let newQueue = [...questionQueue];
+
+        if (newQueue.length === 0) {
+            // Refill and Shuffle
+            const indices = cards.map((_, i) => i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            newQueue = indices;
+        }
+
+        const nextIndex = newQueue.pop();
+        setQuestionQueue(newQueue);
+        const randomCard = cards[nextIndex];
+
         setCurrentCard(randomCard);
         setSelectedOption(null);
         setView('question');
@@ -61,11 +92,11 @@ export default function QuizMode({ cards: rawCards }) {
                 let userPrompt = `Term: ${randomCard.term}\nDefinition: ${randomCard.definition}`;
 
                 if (questionIsDef) {
-                    // HARDER PROMPT: Ask for highly similar terms
-                    systemPrompt = `You are a strict exam proctor. I will give you a Term and Definition. Generate 3 "distractor" TERMS that are WRONG but HIGHLY SIMILAR or confusingly related to the real term. They should test specific nuances or common misconceptions. Return ONLY the 3 terms separated by pipe symbol "|". No labeling.`;
+                    // REFINED MODE: Real, distinct concepts from the same domain
+                    systemPrompt = `You are a concise exam creator. I will give you a Term and Definition. Generate 3 "distractor" TERMS that are REAL, VALID industry terms from the SAME domain. Do NOT generate fake terms. Do NOT generate terms that are chemically similar to the answer (e.g. if answer is "SaaS", don't just say "SaaS V2"). Give distinct concepts that a student might confuse (e.g. if answer is "Phishing", give "Vishing" or "Whaling"). Return ONLY the 3 terms separated by pipe symbol "|". No labeling.`;
                 } else {
-                    // HARDER PROMPT: Ask for subtle definition differences
-                    systemPrompt = `You are a strict exam proctor. I will give you a Term and Definition. Generate 3 "distractor" DEFINITIONS that are WRONG but sound very bold and authoritative. They should use similar keywords but describe a different concept or be factually incorrect in a subtle way. Return ONLY the 3 definitions separated by pipe symbol "|". No labeling.`;
+                    // REFINED MODE: Distinct definitions of related concepts
+                    systemPrompt = `You are a concise exam creator. I will give you a Term and Definition. Generate 3 "distractor" DEFINITIONS. IMPORTANT: Do NOT just tweak the correct definition by one word. Instead, write valid definitions for DIFFERENT concepts that belong to the same category. (e.g. If the term is "Symmetric Key", descibe "Public Key" or "Hashing" as the distractors). The distractors must be plausible because they describe real things, but they are WRONG for this specific term. Return ONLY the 3 definitions separated by pipe symbol "|". No labeling.`;
                 }
 
                 const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -116,7 +147,7 @@ export default function QuizMode({ cards: rawCards }) {
                     }
                 }
 
-                const allOptions = [correctOption, ...distractorOptions].sort(() => Math.random() - 0.5);
+                const allOptions = shuffle([correctOption, ...distractorOptions]);
                 setOptions(allOptions);
 
             } catch (err) {
@@ -144,8 +175,8 @@ export default function QuizMode({ cards: rawCards }) {
         const formattedOptions = allCandidates.map(c => ({
             ...c,
             label: quizType === 'def-to-term' ? c.term : c.definition
-        })).sort(() => Math.random() - 0.5);
-        setOptions(formattedOptions);
+        }));
+        setOptions(shuffle(formattedOptions));
     };
 
     const handleFinish = async () => {
@@ -281,7 +312,9 @@ export default function QuizMode({ cards: rawCards }) {
                             <p>Analyzing your performance...</p>
                         </div>
                     ) : (
-                        <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{summaryText}</div>
+                        <div style={{ lineHeight: '1.6', fontSize: '0.95rem' }}>
+                            <ReactMarkdown>{summaryText}</ReactMarkdown>
+                        </div>
                     )}
                 </div>
             </div>

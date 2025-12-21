@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Save, AlertCircle, Sparkles, Loader2 } from 'lucide-react';
 
 export default function InputSection({ onSave }) {
@@ -7,6 +7,15 @@ export default function InputSection({ onSave }) {
     const [useAI, setUseAI] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [logs, setLogs] = useState([]);
+
+    const textareaRef = useRef(null);
+    const lineNumbersRef = useRef(null);
+
+    const handleScroll = () => {
+        if (textareaRef.current && lineNumbersRef.current) {
+            lineNumbersRef.current.scrollTop = textareaRef.current.scrollTop;
+        }
+    };
 
     const addLog = (msg) => {
         setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${msg}`]);
@@ -31,15 +40,22 @@ export default function InputSection({ onSave }) {
             const cards = [];
             lines.forEach((line, index) => {
                 if (!line.trim()) return;
-                // Simple CSV parse: split by first comma
-                const commaIndex = line.indexOf(',');
-                if (commaIndex === -1) {
-                    throw new Error(`Line ${index + 1} is missing a comma: "${line}"`);
+                // Robust Parse: Try Pipe first, then Comma
+                let delimiter = '|';
+                let splitIndex = line.indexOf(delimiter);
+
+                if (splitIndex === -1) {
+                    delimiter = ',';
+                    splitIndex = line.indexOf(delimiter);
+                }
+
+                if (splitIndex === -1) {
+                    throw new Error(`Line ${index + 1} is missing a separator (| or ,): "${line}"`);
                 }
 
                 const clean = (s) => s.trim().replace(/^(['"])(.*)\1$/, '$2');
-                const term = clean(line.substring(0, commaIndex));
-                const definition = clean(line.substring(commaIndex + 1));
+                const term = clean(line.substring(0, splitIndex));
+                const definition = clean(line.substring(splitIndex + 1));
 
                 if (!term || !definition) {
                     throw new Error(`Line ${index + 1} has empty term or definition.`);
@@ -85,7 +101,7 @@ export default function InputSection({ onSave }) {
         const timeoutId = setTimeout(() => {
             controller.abort();
             addLog("Request timed out!");
-        }, 30000);
+        }, 60000); // Increased to 60s
 
         try {
             addLog(`Using model: ${model}`);
@@ -103,7 +119,7 @@ export default function InputSection({ onSave }) {
                     "messages": [
                         {
                             "role": "system",
-                            "content": "You are a helpful flashcard generator. extracting key terms and definitions from the user's text. Your output must be strictly in CSV format: TERM,DEFINITION. One per line. Do not include markdown code blocks, headers, or any other conversation. Do not number the lines."
+                            "content": "You are a helpful flashcard generator. extracting key terms and definitions from the user's text. Your output must be strictly in PIPE-SEPARATED format: TERM|DEFINITION. One per line. Do not include markdown code blocks, headers, or any other conversation. Do not number the lines."
                         },
                         {
                             "role": "user",
@@ -206,13 +222,47 @@ Security models are critical for CISSP. The Bell-LaPadula model focuses on confi
                 </div>
             )}
 
-            <textarea
-                className="input-area"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder={useAI ? placeholderAI : placeholderCSV}
-                disabled={isLoading}
-            />
+            <div style={{ position: 'relative', display: 'flex', border: '1px solid var(--border)', borderRadius: '0.75rem', overflow: 'hidden', minHeight: '300px', background: 'var(--bg-card)' }}>
+                <div
+                    ref={lineNumbersRef}
+                    style={{
+                        padding: '1rem 0.5rem',
+                        background: '#0f172a',
+                        color: 'var(--text-secondary)',
+                        textAlign: 'right',
+                        fontFamily: 'monospace',
+                        fontSize: '0.9rem',
+                        lineHeight: '1.5',
+                        minWidth: '3rem',
+                        userSelect: 'none',
+                        overflow: 'hidden',
+                        opacity: 0.6
+                    }}
+                >
+                    {text.split('\n').map((_, i) => (
+                        <div key={i}>{i + 1}</div>
+                    ))}
+                    {/* Always show at least row 1 */}
+                    {text === '' && <div>1</div>}
+                </div>
+                <textarea
+                    ref={textareaRef}
+                    className="input-area"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    onScroll={handleScroll}
+                    placeholder={useAI ? placeholderAI : placeholderCSV}
+                    disabled={isLoading}
+                    style={{
+                        border: 'none',
+                        borderRadius: 0,
+                        resize: 'none',
+                        lineHeight: '1.5',
+                        flex: 1,
+                        outline: 'none'
+                    }}
+                />
+            </div>
 
             <div style={{ marginTop: '1rem', textAlign: 'right' }}>
                 <button className="btn-primary" onClick={handleSave} disabled={isLoading}>
@@ -229,6 +279,12 @@ Security models are critical for CISSP. The Bell-LaPadula model focuses on confi
                     )}
                 </button>
             </div>
+
+            {isLoading && useAI && (
+                <div style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                    Should take less than 30 seconds to generate all flashcards, depending on how many were added...
+                </div>
+            )}
 
             {logs.length > 0 && (
                 <div style={{
