@@ -38,11 +38,9 @@ export default function InputSection({ onSave, onAiEnabledChange, initialAiEnabl
     };
 
     const handleClear = () => {
-        if (window.confirm("Are you sure you want to clear all text and context?")) {
+        if (window.confirm("Are you sure you want to clear the terms box?")) {
             setText('');
-            setContext('');
             localStorage.removeItem('flashcards_input_text');
-            localStorage.removeItem('flashcards_input_context');
         }
     };
 
@@ -306,7 +304,7 @@ export default function InputSection({ onSave, onAiEnabledChange, initialAiEnabl
             const content = data.choices[0].message.content;
             const cleanContent = content.replace(/```csv/g, '').replace(/```/g, '').trim();
 
-            setText(cleanContent);
+            setText(prev => prev ? prev + '\n' + cleanContent : cleanContent);
 
         } catch (err) {
             if (err.message.includes("Failed to fetch")) {

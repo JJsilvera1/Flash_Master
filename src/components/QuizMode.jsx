@@ -324,7 +324,7 @@ export default function QuizMode({ cards: rawCards }) {
     }
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className={`quiz-container quiz-mode-${quizType}`} style={{ maxWidth: '600px', margin: '0 auto' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1rem' }}>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -366,11 +366,7 @@ export default function QuizMode({ cards: rawCards }) {
 
             {aiError && <div style={{ color: 'var(--error)', fontSize: '0.8rem', marginBottom: '0.5rem' }}><AlertCircle size={12} style={{ display: 'inline', marginRight: '4px' }} />{aiError}</div>}
 
-            <div className="flashcard-front" style={{
-                position: 'relative', width: '100%', minHeight: '200px', marginBottom: '2rem', height: 'auto', fontSize: '1.2rem',
-                display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center',
-                whiteSpace: 'pre-wrap', wordBreak: 'break-word', padding: '2rem', boxSizing: 'border-box', overflowY: 'auto', maxHeight: '400px'
-            }}>
+            <div className="quiz-card">
                 {currentCard ? headerText : "Loading..."}
 
                 {countdown !== null && (
@@ -385,7 +381,7 @@ export default function QuizMode({ cards: rawCards }) {
                 )}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="quiz-options-grid">
                 {isLoadingAI ? (
                     <div style={{ gridColumn: '1 / -1', padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                         <Loader2 className="spin" style={{ animation: 'spin 1s linear infinite' }} />

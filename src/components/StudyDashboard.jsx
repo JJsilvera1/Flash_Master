@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, HelpCircle, Grid, Brain } from 'lucide-react';
+import { BookOpen, HelpCircle, Grid, Brain, ArrowLeft } from 'lucide-react';
 import FlashcardMode from './FlashcardMode';
 import QuizMode from './QuizMode';
 import MatchMode from './MatchMode';
@@ -13,6 +13,13 @@ export default function StudyDashboard({ cards, onBack, aiEnabled }) {
 
 
             <div className="tabs">
+                <button
+                    className="tab mobile-only-tab"
+                    onClick={onBack}
+                >
+                    <ArrowLeft size={18} />
+                    <span>Terms</span>
+                </button>
                 <button
                     className={`tab ${activeTab === 'study' ? 'active' : ''}`}
                     onClick={() => setActiveTab('study')}

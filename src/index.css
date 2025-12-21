@@ -261,16 +261,30 @@ button {
   font-weight: 600;
 }
 
+.mobile-only-tab {
+  display: none !important;
+}
+
+.quiz-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
 .quiz-option {
   display: block;
   width: 100%;
   text-align: left;
   padding: 1rem;
-  margin: 0.5rem 0;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   color: var(--text-primary);
+  word-break: break-word;
+  /* Enforce wrapping for long words */
+  overflow-wrap: break-word;
+  height: 100%;
+  /* Ensure equal height in the same row */
 }
 
 .quiz-option:hover {
@@ -357,30 +371,25 @@ button {
   }
 
   .app-header {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    padding-top: 3rem;
+    padding-top: 2rem;
+    /* Reduced from 3rem to move logo higher */
   }
 
   /* Position buttons in corners or top row on mobile */
   .header-github {
-    position: absolute;
-    top: 0;
-    right: 0;
-    order: 0;
-    align-self: auto;
-    margin-bottom: 0;
+    display: none !important;
+    /* Hide header github on mobile */
   }
 
   .header-back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin-bottom: 0;
+    display: none !important;
+    /* Hide back button in header on mobile */
   }
 
   /* Compact button for mobile */
@@ -427,8 +436,7 @@ button {
 
   /* Reduce global padding on mobile */
   #root {
-    padding: 1rem !important;
-    /* 50% of 2rem */
+    padding: 0.5rem !important;
   }
 
   .app-main {
@@ -562,6 +570,10 @@ button {
     color: var(--accent-primary) !important;
     background: transparent !important;
   }
+
+  .mobile-only-tab {
+    display: flex !important;
+  }
 }
 
 /* Quiz Score Styles */
@@ -620,5 +632,118 @@ button {
     min-height: 150px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
+  }
+}
+
+/* Quiz Card Styles */
+.quiz-card {
+  position: relative;
+  width: 100%;
+  min-height: 250px;
+  /* Increased from 200px */
+  margin-bottom: 2rem;
+  height: auto;
+  font-size: 1.5rem;
+  /* Increased from 1.2rem */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 2.5rem;
+  /* Increased from 2rem */
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-height: 500px;
+  /* Increased from 400px */
+
+  /* Restored Visual Styles */
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+}
+
+/* Base Option Style (Quiz) */
+.quiz-option {
+  font-size: 1rem;
+  /* Reduced from 1.1rem */
+}
+
+/* Mobile Font Adjustments for Quiz Mode */
+@media (max-width: 640px) {
+
+  /* Mode: Quiz Terms (Terms are answers) */
+  .quiz-mode-def-to-term .quiz-option {
+    font-size: 1.1rem !important;
+    /* Increase selection font */
+  }
+
+  /* Mode: Quiz Definitions (Defs are answers) */
+  .quiz-mode-term-to-def .quiz-card {
+    font-size: 1.6rem !important;
+    /* Slightly reduced font for the term */
+    min-height: 120px !important;
+    /* Reduced height of the card */
+    padding: 1rem !important;
+    /* Reduced padding */
+    font-weight: 700;
+  }
+
+  .quiz-mode-term-to-def .quiz-option {
+    font-size: 1rem !important;
+    /* Increase selection (Definition) font slightly if needed, or keep standard readable size */
+    line-height: 1.4;
+  }
+
+  .quiz-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-tagline {
+    display: none;
+  }
+
+  .app-header {
+    padding-top: 1rem !important;
+    /* Move logo even higher */
+    margin-bottom: 0.5rem !important;
+  }
+
+  .footer-github {
+    display: flex !important;
+    margin: 1rem auto 0;
+    width: fit-content;
+  }
+}
+
+/* Footer Styles */
+.footer {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.footer-github {
+  display: none;
+  /* Hidden by default on desktop, shown on mobile if desired */
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  color: white !important;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
+@media (min-width: 641px) {
+  .footer-github {
+    display: none !important;
+    /* Ensure hidden on desktop if header one exists */
   }
 }
