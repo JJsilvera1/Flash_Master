@@ -328,7 +328,7 @@ export default function QuizMode({ cards: rawCards }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1rem' }}>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div className="quiz-score">
+                    <div className="quiz-score desktop-only">
                         <span className="score-item correct">
                             <span className="score-label">Correct: </span>
                             <span className="score-value">{correctCount}</span>
@@ -340,27 +340,41 @@ export default function QuizMode({ cards: rawCards }) {
                         </span>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto' }}>
                         <button className="btn-secondary" onClick={handleFinish} style={{ fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}>
                             Finish & Summary
                         </button>
                         <button onClick={toggleQuizType} className="btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Switch Quiz Direction">
                             <ArrowLeftRight size={14} />
-                            {quizType === 'def-to-term' ? "Quiz: Terms" : "Quiz: Definitions"}
+                            {quizType === 'def-to-term' ? "Quiz Mode: Terms" : "Quiz Mode: Definitions"}
                         </button>
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: useAI ? 'var(--accent-primary)' : 'var(--text-secondary)' }}>
-                        <input type="checkbox" checked={useAI} onChange={(e) => setUseAI(e.target.checked)} />
-                        <Sparkles size={14} /> AI Distractors
-                    </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+                    <div className="quiz-score mobile-only">
+                        <span className="score-item correct">
+                            <span className="score-label">Correct: </span>
+                            <span className="score-value">{correctCount}</span>
+                        </span>
+                        <span className="score-separator"> / </span>
+                        <span className="score-item wrong">
+                            <span className="score-label">Wrong: </span>
+                            <span className="score-value">{wrongCount}</span>
+                        </span>
+                    </div>
 
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: autoNext ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-                        <input type="checkbox" checked={autoNext} onChange={(e) => setAutoNext(e.target.checked)} />
-                        <FastForward size={14} /> Auto Next
-                    </label>
+                    <div style={{ display: 'flex', gap: '1rem', marginLeft: 'auto' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: useAI ? 'var(--accent-primary)' : 'var(--text-secondary)' }}>
+                            <input type="checkbox" checked={useAI} onChange={(e) => setUseAI(e.target.checked)} />
+                            <Sparkles size={14} /> AI Distractors
+                        </label>
+
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: autoNext ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
+                            <input type="checkbox" checked={autoNext} onChange={(e) => setAutoNext(e.target.checked)} />
+                            <FastForward size={14} /> Auto Next
+                        </label>
+                    </div>
                 </div>
             </div>
 

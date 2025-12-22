@@ -64,6 +64,25 @@ button {
   background: #334155;
 }
 
+/* Visibility Utilities */
+.mobile-only {
+  display: none !important;
+}
+
+.desktop-only {
+  display: flex !important;
+}
+
+@media (max-width: 640px) {
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+}
+
 .input-area {
   width: 100%;
   min-height: 300px;
@@ -174,6 +193,12 @@ button {
   opacity: 0;
   pointer-events: none;
   transform: scale(0.8);
+}
+
+@media (max-width: 640px) {
+  .match-card.matched {
+    display: none !important;
+  }
 }
 
 .match-card.errors {
