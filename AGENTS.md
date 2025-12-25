@@ -82,6 +82,31 @@ The question/context is: "[Question]".
 Do NOT reveal the answer word itself. It should guide the user to the answer without giving it away directly. Max 15 words.
 ```
 
+---
+
+## 5. The Scenario Agent 🎭
+**Role**: Complex Situation Simulation  
+**Trigger**: Quiz Mode -> "Scenarios" Selected  
+**Model**: Instruction-heavy Large Language Model.
+
+### Responsibilities
+- **Synthesis**: Analyze terms to find thematic relationships; create a logically cohesive scenario instead of forcing unrelated terms together.
+- **Contextualization**: Prioritize the **Custom Context** field to determine the setting, tone, and specific constraints (e.g. "Focus on risk assessment").
+- **Difficulty Scaling**: Adjusts linguistic complexity and nuance based on the chosen level (Easy, Medium, Hard).
+- **Rationale Generation**: Explains the correct path *and* why other paths (distractors) are sub-optimal in under 50 words.
+
+### System Prompt Strategy
+```text
+You are an expert exam creator. Develop a scenario-based question.
+Difficulty: [Level].
+USER CONTEXT (PRIORITY): [Context].
+
+INSTRUCTIONS:
+- Create a scenario that integrates the provided study terms: [Terms]
+- If USER CONTEXT is provided, it MUST take precedence.
+- CONSTRAINTS: Single cohesive paragraph, 4 options, concise rationale.
+```
+
 ## Security & Privacy 🔐
 - **Local Storage**: API Keys are stored in the browser's `localStorage` (`flashcards_api_config`).
 - **Direct Traffic**: Requests go directly from Client -> OpenRouter/OpenAI. No intermediate server.

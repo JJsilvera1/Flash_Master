@@ -18,7 +18,12 @@ A modern, dark-mode flashcard application designed for serious study. Features A
 - **Flashcards**: Beautiful 3D flip animations with shuffle and navigation controls.
 - **Quiz Mode**:
     - **Smart Distractors**: AI generates *plausible but wrong* answers from the same domain.
-    - **Auto Next**: Speed flow optimized.
+    - **Scenario Mode 🎭**:
+        - **AI-Generated Cases**: Creates complex, situational questions based on 3-5 random cards.
+        - **Custom Context**: Priority-based context guiding the AI (e.g. "Focus on management decisions").
+        - **Dynamic Difficulty**: (Easy, Medium, Hard) scales the logic and distractor plausibility.
+        - **In-Place Rationale**: Replacing the question with a concise 50-word explanation of *why* the answer is correct and why distractors fail.
+    - **Auto Next**: Speed flow optimized with seamless state transitions.
 - **Match Mode**:
     - A memory game grid with **7 pairs** (14 tiles).
     - **True Shuffle**: Unbiased randomization every game.
