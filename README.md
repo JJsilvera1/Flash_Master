@@ -2,9 +2,9 @@
 
 A modern, dark-mode flashcard application designed for serious study. Features AI-powered content generation, adaptive quizzes, and game modes.
 
-## ✨ Features
+## Features
 
-### 1. Input & Generation ✍️
+### 1. Input & Generation 
 - **AI-Powered Creation**:
   - **Generate Terms**: Extract terms/definitions from raw notes or articles.
   - **Smart Context**: Add topics (e.g. "CISSP Domain 1") to guide the AI.
@@ -14,11 +14,11 @@ A modern, dark-mode flashcard application designed for serious study. Features A
   - Supports both Pipe (`|`) and Comma (`,`) delimiters.
   - **Local API Key**: Your key is stored securely in your browser's local storage (never on our servers).
 
-### 2. Study Modes 📚
+### 2. Study Modes
 - **Flashcards**: Beautiful 3D flip animations with shuffle and navigation controls.
 - **Quiz Mode**:
     - **Smart Distractors**: AI generates *plausible but wrong* answers from the same domain.
-    - **Scenario Mode 🎭**:
+    - **Scenario Mode**:
         - **AI-Generated Cases**: Creates complex, situational questions based on 3-5 random cards.
         - **Custom Context**: Priority-based context guiding the AI (e.g. "Focus on management decisions").
         - **Dynamic Difficulty**: (Easy, Medium, Hard) scales the logic and distractor plausibility.
@@ -27,7 +27,7 @@ A modern, dark-mode flashcard application designed for serious study. Features A
 - **Match Mode**:
     - A memory game grid with **7 pairs** (14 tiles).
     - **True Shuffle**: Unbiased randomization every game.
-- **Recall Mode** 🧠:
+- **Recall Mode**:
     - **Active Recall**: Type the answer manually for maximum retention.
     - **Progressive Hints** (3-Stage):
         - Level 1: First 3 letters.
@@ -37,12 +37,12 @@ A modern, dark-mode flashcard application designed for serious study. Features A
     - **"I Don't Know"**: Skip option that marks the card as incorrect (0% score).
     - **True Randomization**: Uses a shuffled deck system so you see every card once before repeats.
 
-### 3. Premium UI 🎨
+### 3. Premium UI
 - **Dark Mode**: sleek `slate-900` theme with violet/indigo accents.
 - **Responsive**: Works on desktop and mobile.
 - **Feature Gating**: Disabling AI cleanly locks advanced features like Recall Mode.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (v18+)
