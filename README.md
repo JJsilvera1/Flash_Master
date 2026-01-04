@@ -71,7 +71,7 @@ A modern, dark-mode flashcard application designed for serious study. Features A
    - Enter your OpenRouter or OpenAI API Key.
    - It will be saved securely in your browser.
 
-## 🛠 Tech Stack
+## Tech Stack
 - **Vite + React**: Blazing fast frontend.
 - **OpenRouter API**: Intelligence layer.
 - **Lucide React**: Iconography.
